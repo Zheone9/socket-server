@@ -1,9 +1,10 @@
 import express from "express";
-import { SERVER_PORT } from "../global/environment";
+
 import { Server as ServerIO } from "socket.io";
 import cors from "cors";
 import http from "http";
 import * as socket from "../sockets/sockets";
+require("dotenv").config();
 
 export default class Server {
   private static _instance: Server;
@@ -16,25 +17,29 @@ export default class Server {
   private constructor() {
     this.app = express();
     this.app.use(cors());
-    this.port = SERVER_PORT;
+    this.port = Number(process.env.SERVER_PORT);
     this.httpServer = new http.Server(this.app);
     this.io = new ServerIO(this.httpServer, {
       cors: {
-        origin: ["http://localhost:4200", "http://192.168.100.55:4200"],
+        origin: process.env.CORS_ORIGIN_HOSTS?.split(", "),
       },
     });
     this.escucharSockets();
   }
   private escucharSockets() {
     console.log("escuchando conexiones");
+
     this.io.on("connection", (cliente) => {
-      console.log("Nuevo cliente");
+      //Conectar Cliente
+      socket.conectarCliente(cliente, this.io);
+
+      //configurar usuario
+      socket.configurarUsuario(cliente, this.io);
       //Mensajes
       socket.mensaje(cliente, this.io);
-      //nuevos coenectados
-      socket.conectado(cliente, this.io);
+
       //desconectar
-      socket.desconectar(cliente);
+      socket.desconectar(cliente, this.io);
     });
   }
 
@@ -42,6 +47,6 @@ export default class Server {
     return this._instance || (this._instance = new this());
   }
   start(callback: () => void) {
-    this.httpServer.listen(this.port, "192.168.100.55", callback);
+    this.httpServer.listen(this.port, process.env.HOST, callback);
   }
 }
