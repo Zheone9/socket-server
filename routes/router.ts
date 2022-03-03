@@ -26,17 +26,17 @@ router.post("/mensajes/:id", (req: Request, res: Response) => {
   const { usuario, cuerpo } = req.body.payload;
 
   const server = Server.instance;
-
+  const id = req.params.id;
   const payload = {
     de: usuario,
     cuerpo,
     type: "private",
   };
   //mensaje privado
-  // server.io.in(id).emit("mensaje-privado", payload);
+  server.io.in(id).emit("mensaje-privado", payload);
 
   //mensaje a todos
-  server.io.emit("mensaje-nuevo", payload);
+  // server.io.emit("mensaje-nuevo", payload);
 
   res.json({
     de: usuario,
@@ -65,10 +65,11 @@ router.get("/usuarios", async (req: Request, res: Response) => {
 });
 
 //Obtener usuarios y sus nombres
-router.get("/usuarios/detalle", async (req: Request, res: Response) => {
+router.get("/usuarios/detalle", (req: Request, res: Response) => {
   res.json({
     ok: true,
     clientes: usuariosConectados.getLista(),
   });
 });
+
 export default router;

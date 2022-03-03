@@ -32,7 +32,8 @@ export default class Server {
     this.io.on("connection", (cliente) => {
       //Conectar Cliente
       socket.conectarCliente(cliente, this.io);
-
+      // //Obtener usuarios activos
+      // socket.obtenerUsuarios(cliente, this.io);
       //configurar usuario
       socket.configurarUsuario(cliente, this.io);
       //Mensajes
