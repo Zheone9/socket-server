@@ -31,14 +31,18 @@ require("dotenv").config();
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
-        this.app.use((0, cors_1.default)());
         this.app.use((req, res, next) => {
             res.header("Access-Control-Allow-Origin", "*");
             next();
         });
+        this.app.use((0, cors_1.default)());
         this.port = Number(process.env.PORT);
         this.httpServer = new http_1.default.Server(this.app);
-        this.io = new socket_io_1.Server(this.httpServer);
+        this.io = new socket_io_1.Server(this.httpServer, {
+            cors: {
+                origin: ["*"],
+            },
+        });
         this.escucharSockets();
     }
     escucharSockets() {
@@ -60,7 +64,7 @@ class Server {
         return this._instance || (this._instance = new this());
     }
     start(callback) {
-        this.httpServer.listen(this.port, callback);
+        this.httpServer.listen(this.port || 3000, callback);
     }
 }
 exports.default = Server;

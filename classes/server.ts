@@ -1,6 +1,6 @@
 import express from "express";
-
-import { Server as ServerIO } from "socket.io";
+import { createServer } from "http";
+import { Server as ServerIO, Socket } from "socket.io";
 import cors from "cors";
 import http from "http";
 import * as socket from "../sockets/sockets";
@@ -16,14 +16,21 @@ export default class Server {
 
   private constructor() {
     this.app = express();
-    this.app.use(cors());
     this.app.use((req, res, next) => {
       res.header("Access-Control-Allow-Origin", "*");
       next();
     });
+    this.app.use(cors());
+
     this.port = Number(process.env.PORT);
+
     this.httpServer = new http.Server(this.app);
-    this.io = new ServerIO(this.httpServer);
+    this.io = new ServerIO(this.httpServer, {
+      cors: {
+        origin: ["*"],
+      },
+    });
+
     this.escucharSockets();
   }
   private escucharSockets() {
@@ -48,6 +55,6 @@ export default class Server {
     return this._instance || (this._instance = new this());
   }
   start(callback: () => void) {
-    this.httpServer.listen(this.port, callback);
+    this.httpServer.listen(this.port || 3000, callback);
   }
 }
