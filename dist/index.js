@@ -15,5 +15,5 @@ server.app.use(body_parser_1.default.json());
 server.app.use((0, cors_1.default)({ origin: true, credentials: true }));
 server.app.use("/", router_1.default);
 server.start(() => {
-    console.log(`Servidor corriendo en el puerto ${process.env.SERVER_PORT}`);
+    console.log(`Servidor corriendo en el puerto ${process.env.PORT}`);
 });

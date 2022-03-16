@@ -21,7 +21,7 @@ export default class Server {
       res.header("Access-Control-Allow-Origin", "*");
       next();
     });
-    this.port = Number(process.env.SERVER_PORT);
+    this.port = Number(process.env.PORT);
     this.httpServer = new http.Server(this.app);
     this.io = new ServerIO(this.httpServer);
     this.escucharSockets();

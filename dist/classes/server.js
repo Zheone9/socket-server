@@ -30,16 +30,15 @@ const socket = __importStar(require("../sockets/sockets"));
 require("dotenv").config();
 class Server {
     constructor() {
-        var _a;
         this.app = (0, express_1.default)();
         this.app.use((0, cors_1.default)());
-        this.port = Number(process.env.SERVER_PORT);
-        this.httpServer = new http_1.default.Server(this.app);
-        this.io = new socket_io_1.Server(this.httpServer, {
-            cors: {
-                origin: (_a = process.env.CORS_ORIGIN_HOSTS) === null || _a === void 0 ? void 0 : _a.split(", "),
-            },
+        this.app.use((req, res, next) => {
+            res.header("Access-Control-Allow-Origin", "*");
+            next();
         });
+        this.port = Number(process.env.PORT);
+        this.httpServer = new http_1.default.Server(this.app);
+        this.io = new socket_io_1.Server(this.httpServer);
         this.escucharSockets();
     }
     escucharSockets() {
@@ -61,7 +60,7 @@ class Server {
         return this._instance || (this._instance = new this());
     }
     start(callback) {
-        this.httpServer.listen(this.port, process.env.HOST, callback);
+        this.httpServer.listen(this.port, callback);
     }
 }
 exports.default = Server;
