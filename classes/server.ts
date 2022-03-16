@@ -48,6 +48,6 @@ export default class Server {
     return this._instance || (this._instance = new this());
   }
   start(callback: () => void) {
-    this.httpServer.listen(this.port, process.env.HOST, callback);
+    this.httpServer.listen(this.port, callback);
   }
 }
