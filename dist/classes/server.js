@@ -40,7 +40,10 @@ class Server {
         this.httpServer = new http_1.default.Server(this.app);
         this.io = new socket_io_1.Server(this.httpServer, {
             cors: {
-                origin: ["*"],
+                origin: "*",
+                methods: ["GET", "POST"],
+                allowedHeaders: ["my-custom-header"],
+                credentials: true,
             },
         });
         this.escucharSockets();

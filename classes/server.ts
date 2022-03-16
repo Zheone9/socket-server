@@ -27,7 +27,10 @@ export default class Server {
     this.httpServer = new http.Server(this.app);
     this.io = new ServerIO(this.httpServer, {
       cors: {
-        origin: ["*"],
+        origin: "*",
+        methods: ["GET", "POST"],
+        allowedHeaders: ["my-custom-header"],
+        credentials: true,
       },
     });
 
