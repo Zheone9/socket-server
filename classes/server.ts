@@ -17,13 +17,13 @@ export default class Server {
   private constructor() {
     this.app = express();
     this.app.use(cors());
+    this.app.use((req, res, next) => {
+      res.header("Access-Control-Allow-Origin", "*");
+      next();
+    });
     this.port = Number(process.env.SERVER_PORT);
     this.httpServer = new http.Server(this.app);
-    this.io = new ServerIO(this.httpServer, {
-      cors: {
-        origin: process.env.CORS_ORIGIN_HOSTS?.split(", "),
-      },
-    });
+    this.io = new ServerIO(this.httpServer);
     this.escucharSockets();
   }
   private escucharSockets() {
