@@ -10,6 +10,9 @@ server.app.use(bodyParser.json());
 
 //CORS
 server.app.use(cors({ origin: true, credentials: true }));
+server.app.use(function (req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+});
 
 server.app.use("/", router);
 
