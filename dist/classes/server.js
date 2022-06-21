@@ -23,11 +23,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const socket_io_1 = require("socket.io");
 const cors_1 = __importDefault(require("cors"));
-const http_1 = __importDefault(require("http"));
+const https_1 = __importDefault(require("https"));
 const socket = __importStar(require("../sockets/sockets"));
 require("dotenv").config();
+const fs = require("fs");
+const path = require("path");
+const httpsOptions = {
+    key: fs.readFileSync("server.key"),
+    cert: fs.readFileSync("server.cert"),
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"],
+        allowedHeaders: [""],
+        credentials: true,
+    },
+};
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -37,15 +48,11 @@ class Server {
             next();
         });
         this.port = Number(process.env.PORT);
-        this.httpServer = new http_1.default.Server(this.app);
-        this.io = new socket_io_1.Server(this.httpServer, {
-            cors: {
-                origin: "*",
-                methods: ["GET", "POST"],
-                allowedHeaders: ["my-custom-header"],
-                credentials: true,
-            },
-        });
+        this.server = https_1.default.createServer({
+            key: fs.readFileSync("server.key"),
+            cert: fs.readFileSync("server.cert"),
+        }, this.app);
+        this.io = require("socket.io")(this.server);
         this.escucharSockets();
     }
     escucharSockets() {
@@ -67,7 +74,7 @@ class Server {
         return this._instance || (this._instance = new this());
     }
     start(callback) {
-        this.httpServer.listen(this.port || 3000, callback);
+        this.server.listen(this.port || 3000, callback);
     }
 }
 exports.default = Server;

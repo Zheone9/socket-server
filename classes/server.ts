@@ -1,18 +1,29 @@
 import express from "express";
-import { createServer } from "http";
+import { createServer } from "https";
 import { Server as ServerIO, Socket } from "socket.io";
 import cors from "cors";
-import http from "http";
+import https from "https";
 import * as socket from "../sockets/sockets";
 require("dotenv").config();
-
+const fs = require("fs");
+const path = require("path");
+const httpsOptions = {
+  key: fs.readFileSync("server.key"),
+  cert: fs.readFileSync("server.cert"),
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+    allowedHeaders: [""],
+    credentials: true,
+  },
+};
 export default class Server {
   private static _instance: Server;
   public app: express.Application;
   public port: number;
 
   public io: ServerIO;
-  private httpServer: http.Server;
+  private server: https.Server;
 
   private constructor() {
     this.app = express();
@@ -24,15 +35,15 @@ export default class Server {
 
     this.port = Number(process.env.PORT);
 
-    this.httpServer = new http.Server(this.app);
-    this.io = new ServerIO(this.httpServer, {
-      cors: {
-        origin: "*",
-        methods: ["GET", "POST"],
-        allowedHeaders: ["my-custom-header"],
-        credentials: true,
+    this.server = https.createServer(
+      {
+        key: fs.readFileSync("server.key"),
+        cert: fs.readFileSync("server.cert"),
       },
-    });
+      this.app
+    );
+
+    this.io = require("socket.io")(this.server);
 
     this.escucharSockets();
   }
@@ -58,6 +69,6 @@ export default class Server {
     return this._instance || (this._instance = new this());
   }
   start(callback: () => void) {
-    this.httpServer.listen(this.port || 3000, callback);
+    this.server.listen(this.port || 3000, callback);
   }
 }
