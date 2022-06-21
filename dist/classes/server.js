@@ -52,7 +52,15 @@ class Server {
             key: fs.readFileSync("server.key"),
             cert: fs.readFileSync("server.cert"),
         }, this.app);
-        this.io = require("socket.io")(this.server);
+        (this.io = require("socket.io")(this.server)),
+            {
+                cors: {
+                    origin: "*",
+                    methods: ["GET", "POST"],
+                    allowedHeaders: ["my-custom-header"],
+                    credentials: true,
+                },
+            };
         this.escucharSockets();
     }
     escucharSockets() {

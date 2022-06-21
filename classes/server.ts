@@ -43,7 +43,15 @@ export default class Server {
       this.app
     );
 
-    this.io = require("socket.io")(this.server);
+    (this.io = require("socket.io")(this.server)),
+      {
+        cors: {
+          origin: "*",
+          methods: ["GET", "POST"],
+          allowedHeaders: ["my-custom-header"],
+          credentials: true,
+        },
+      };
 
     this.escucharSockets();
   }
