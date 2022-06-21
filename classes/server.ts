@@ -2,7 +2,7 @@ import express from "express";
 import { createServer } from "https";
 import { Server as ServerIO, Socket } from "socket.io";
 import cors from "cors";
-import https from "https";
+import http from "http";
 import * as socket from "../sockets/sockets";
 require("dotenv").config();
 const fs = require("fs");
@@ -23,7 +23,7 @@ export default class Server {
   public port: number;
 
   public io: ServerIO;
-  private server: https.Server;
+  private server: http.Server;
 
   private constructor() {
     this.app = express();
@@ -35,13 +35,7 @@ export default class Server {
 
     this.port = Number(process.env.PORT);
 
-    this.server = https.createServer(
-      {
-        key: fs.readFileSync("server.key"),
-        cert: fs.readFileSync("server.cert"),
-      },
-      this.app
-    );
+    this.server = http.createServer(this.app);
 
     this.io = require("socket.io")(this.server, {
       cors: {

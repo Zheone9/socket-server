@@ -24,7 +24,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
-const https_1 = __importDefault(require("https"));
+const http_1 = __importDefault(require("http"));
 const socket = __importStar(require("../sockets/sockets"));
 require("dotenv").config();
 const fs = require("fs");
@@ -48,10 +48,7 @@ class Server {
             next();
         });
         this.port = Number(process.env.PORT);
-        this.server = https_1.default.createServer({
-            key: fs.readFileSync("server.key"),
-            cert: fs.readFileSync("server.cert"),
-        }, this.app);
+        this.server = http_1.default.createServer(this.app);
         this.io = require("socket.io")(this.server, {
             cors: {
                 origin: "*",
