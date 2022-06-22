@@ -39,7 +39,7 @@ export default class Server {
 
     this.io = require("socket.io")(this.server, {
       cors: {
-        origin: "*",
+        origin: "www.zheone9.github.io",
         methods: ["GET", "POST"],
         credentials: true,
       },

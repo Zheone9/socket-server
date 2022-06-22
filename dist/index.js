@@ -14,7 +14,6 @@ server.app.use(body_parser_1.default.json());
 //CORS
 server.app.use((0, cors_1.default)({ origin: true, credentials: true }));
 server.app.use(function (req, res, next) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });

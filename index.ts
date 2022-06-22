@@ -11,7 +11,6 @@ server.app.use(bodyParser.json());
 //CORS
 server.app.use(cors({ origin: true, credentials: true }));
 server.app.use(function (req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
