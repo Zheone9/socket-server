@@ -29,16 +29,6 @@ const socket = __importStar(require("../sockets/sockets"));
 require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
-const httpsOptions = {
-    key: fs.readFileSync("server.key"),
-    cert: fs.readFileSync("server.cert"),
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"],
-        allowedHeaders: [""],
-        credentials: true,
-    },
-};
 class Server {
     constructor() {
         this.app = (0, express_1.default)();

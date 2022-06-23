@@ -7,16 +7,7 @@ import * as socket from "../sockets/sockets";
 require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
-const httpsOptions = {
-  key: fs.readFileSync("server.key"),
-  cert: fs.readFileSync("server.cert"),
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
-    allowedHeaders: [""],
-    credentials: true,
-  },
-};
+
 export default class Server {
   private static _instance: Server;
   public app: express.Application;
