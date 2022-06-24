@@ -36,29 +36,18 @@ exports.mensaje = mensaje;
 //Informar usuario conectado al chat
 const configurarUsuario = (cliente, io) => {
     cliente.on("configurarUsuario", (payload, callback) => {
-        var _a;
-        const viejoNombre = (_a = exports.usuariosConectados.getUsuario(cliente.id)) === null || _a === void 0 ? void 0 : _a.nombre;
-        const nuevonombre = exports.usuariosConectados.actualizarNombre(cliente.id, payload.nombre);
+        let nombre = exports.usuariosConectados.actualizarNombre(cliente.id, payload.nombre);
+        io.emit("mensaje-nuevo", {
+            de: "Servidor",
+            cuerpo: `${nombre} se ha unido al chat`,
+            id: process.env.ANY_ID,
+        });
         callback({
             ok: true,
             id: cliente.id,
             mensaje: `${payload.nombre}, configurado`,
         });
         io.emit("usuarios-activos", exports.usuariosConectados.getLista());
-        if (nuevonombre === "sin-name") {
-            io.emit("mensaje-nuevo", {
-                de: "Servidor",
-                cuerpo: `${viejoNombre} se ha ido`,
-                id: process.env.ANY_ID,
-            });
-        }
-        else if (nuevonombre !== "sin-name") {
-            io.emit("mensaje-nuevo", {
-                de: "Servidor",
-                cuerpo: `${nuevonombre} se ha unido al chat`,
-                id: process.env.ANY_ID,
-            });
-        }
     });
 };
 exports.configurarUsuario = configurarUsuario;

@@ -40,32 +40,24 @@ export const configurarUsuario = (cliente: Socket, io: socketIO.Server) => {
   cliente.on(
     "configurarUsuario",
     (payload: { nombre: string }, callback: Function) => {
-      const viejoNombre = usuariosConectados.getUsuario(cliente.id)?.nombre;
-      const nuevonombre = usuariosConectados.actualizarNombre(
+      let nombre = usuariosConectados.actualizarNombre(
         cliente.id,
         payload.nombre
       );
+
+      io.emit("mensaje-nuevo", {
+        de: "Servidor",
+        cuerpo: `${nombre} se ha unido al chat`,
+        id: process.env.ANY_ID,
+      });
 
       callback({
         ok: true,
         id: cliente.id,
         mensaje: `${payload.nombre}, configurado`,
       });
-      io.emit("usuarios-activos", usuariosConectados.getLista());
 
-      if (nuevonombre === "sin-name") {
-        io.emit("mensaje-nuevo", {
-          de: "Servidor",
-          cuerpo: `${viejoNombre} se ha ido`,
-          id: process.env.ANY_ID,
-        });
-      } else if (nuevonombre !== "sin-name") {
-        io.emit("mensaje-nuevo", {
-          de: "Servidor",
-          cuerpo: `${nuevonombre} se ha unido al chat`,
-          id: process.env.ANY_ID,
-        });
-      }
+      io.emit("usuarios-activos", usuariosConectados.getLista());
     }
   );
 };

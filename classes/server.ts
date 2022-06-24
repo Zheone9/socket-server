@@ -38,6 +38,7 @@ export default class Server {
 
     this.escucharSockets();
   }
+
   private escucharSockets() {
     console.log("escuchando conexiones");
 
